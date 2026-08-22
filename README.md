@@ -1,36 +1,110 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mivo Development Workspace
 
-## Getting Started
+Mivo is a web design and development studio run by Oliver. This repository is the central workspace for:
 
-First, run the development server:
+1. **The public Mivo website** — portfolio, services, and project enquiries
+2. **Internal documentation** — business process, development guides
+3. **Client projects** — isolated folders for external client work
+
+## Quick start
+
+The Mivo site is a static HTML/CSS/JS site. No build step required.
+
+**Preview locally:**
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Option 1 — open directly
+open index.html
+
+# Option 2 — local server (recommended)
+python3 -m http.server 8080
+# Then visit http://localhost:8080
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Project structure
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+mivo-development/
+├── index.html          # Mivo public website
+├── css/styles.css      # Site styles
+├── js/
+│   ├── main.js         # Navigation, scroll, animations
+│   ├── portfolio.js    # Portfolio data + rendering
+│   └── form.js         # Quote form logic
+├── assets/             # Images, favicon, etc.
+├── docs/               # Internal documentation
+├── projects/           # Client project folders
+└── README.md           # This file
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Adding a portfolio project
 
-## Learn More
+Edit `js/portfolio.js` and add an entry to `PORTFOLIO_PROJECTS`:
 
-To learn more about Next.js, take a look at the following resources:
+```javascript
+{
+  slug: "project-name",
+  name: "Project Name",
+  type: "client",        // "client" | "personal" | "concept"
+  category: "Business website",
+  description: "Short description.",
+  technologies: ["HTML", "CSS"],
+  liveUrl: "https://example.com",  // optional
+  previewClass: "preview-custom",  // add CSS in styles.css
+  previewLabel: "PROJECT",
+  featured: true,
+  large: false,
+}
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Never label a concept or personal project as a paid client.**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Creating a new client project
 
-## Deploy on Vercel
+1. Duplicate `projects/client-project-template/` to `projects/client-name/`
+2. Fill in `project-info.md` and `requirements.md`
+3. Keep all client work inside that folder — do not mix with the Mivo site
+4. Follow the process in `docs/business/client-process.md`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+See `projects/README.md` for the full onboarding checklist.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Deploying the Mivo site
+
+The site can be deployed to any static host:
+
+- **GitHub Pages** — push to `main`, enable Pages on the repo
+- **Netlify** — connect repo, publish directory is root
+- **Vercel** — connect repo, no build command needed
+
+Update the canonical URL in `index.html` when your domain is live.
+
+## Environment variables
+
+None required for the static site. If you connect the quote form to a service later (Formspree, Netlify Forms, etc.), add credentials via your host's environment settings — never commit secrets.
+
+## Important commands
+
+| Task | Command |
+|------|---------|
+| Local preview | `python3 -m http.server 8080` |
+| Edit portfolio | `js/portfolio.js` |
+| Edit quote email | `js/form.js` → `QUOTE_EMAIL` |
+
+## Documentation
+
+| Document | Purpose |
+|----------|---------|
+| `docs/business/client-process.md` | How to handle enquiries and quotes |
+| `docs/business/custom-project-safety.md` | Assessing custom requests |
+| `docs/client-process/requirements-template.md` | Project requirements template |
+| `docs/development/getting-started.md` | Development notes |
+
+## Git remote
+
+GitHub: [github.com/SyllisSaaS/Mivo](https://github.com/SyllisSaaS/Mivo)
+
+To connect this local repo:
+
+```bash
+git remote add origin https://github.com/SyllisSaaS/Mivo.git
+```
