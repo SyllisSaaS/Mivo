@@ -1,4 +1,5 @@
 import { Analytics } from "@/components/site/Analytics";
+import { OwnerLoginLink } from "@/components/site/OwnerLoginLink";
 import { ProjectCard } from "@/components/site/ProjectCard";
 import { QuoteForm } from "@/components/site/QuoteForm";
 import { ScrollReveal } from "@/components/site/ScrollReveal";
@@ -295,6 +296,7 @@ export default function HomePage() {
 
       <ScrollReveal />
       <Analytics />
+      <OwnerLoginLink />
     </>
   );
 }

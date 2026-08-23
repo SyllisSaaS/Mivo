@@ -933,6 +933,35 @@ ul {
   color: var(--text);
 }
 
+/* Discreet owner sign-in — public site only, not indexed as a feature */
+.owner-login {
+  position: fixed;
+  right: 14px;
+  bottom: 14px;
+  z-index: 25;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(0, 0, 0, 0.55);
+  color: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(8px);
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.owner-login:hover,
+.owner-login:focus-visible {
+  color: rgba(255, 255, 255, 0.9);
+  border-color: rgba(255, 255, 255, 0.35);
+  background: rgba(0, 0, 0, 0.75);
+  outline: none;
+}
+
 /* =========================================
    RESPONSIVE
 ========================================= */
