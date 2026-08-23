@@ -1,6 +1,12 @@
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
+import { DemoBanner } from "@/components/admin/DemoBanner";
+import { DemoToggle } from "@/components/admin/DemoToggle";
 import { requireSession } from "@/lib/auth";
 import { isDatabaseConfigured, query } from "@/lib/db";
+import {
+  demoNewEnquiryCount,
+  isDemoMode,
+} from "@/lib/demo";
 import { signOut } from "./actions";
 
 /**
@@ -31,7 +37,10 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   const session = await requireSession();
-  const newEnquiries = await newEnquiryCount();
+  const demo = await isDemoMode();
+  const newEnquiries = demo
+    ? demoNewEnquiryCount()
+    : await newEnquiryCount();
 
   return (
     <div className="admin-shell">
@@ -46,7 +55,15 @@ export default async function DashboardLayout({
           </form>
         }
       />
-      <div className="admin-main">{children}</div>
+      <div className="admin-main">
+        {demo && (
+          <div className="admin-content" style={{ paddingBottom: 0 }}>
+            <DemoBanner />
+          </div>
+        )}
+        {children}
+      </div>
+      <DemoToggle enabled={demo} />
     </div>
   );
 }

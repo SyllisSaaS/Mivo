@@ -878,3 +878,44 @@
     gap: 4px;
   }
 }
+
+/* ---------- Demo mode toggle (admin-only) ---------- */
+
+.admin-demo-toggle {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 40;
+  margin: 0;
+}
+
+.admin-demo-toggle__button {
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  border: 1px solid var(--admin-border);
+  background: var(--admin-panel);
+  color: var(--admin-muted);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.admin-demo-toggle__button:hover {
+  color: var(--admin-text);
+  border-color: var(--admin-muted);
+}
+
+.admin-demo-toggle__button--on {
+  color: #1a1200;
+  background: #f5c842;
+  border-color: #f5c842;
+}
+
+.admin-demo-toggle__button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}

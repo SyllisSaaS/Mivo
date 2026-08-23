@@ -33,6 +33,7 @@
     "typecheck": "tsc --noEmit",
     "test": "npm run test:build && node --test \"tests/*.test.mjs\"",
     "db:setup": "node scripts/db-setup.mjs",
+    "setup": "node scripts/setup.mjs",
     "admin:hash": "node scripts/hash-password.mjs",
     "test:build": "tsc -p tsconfig.test.json",
     "test:unit": "node --test tests/validation.test.mjs"

@@ -16,6 +16,7 @@ import {
   PROJECT_TYPES,
 } from "@/lib/constants";
 import { isDatabaseConfigured } from "@/lib/db";
+import { demoEnquiriesList, isDemoMode } from "@/lib/demo";
 import { listEnquiries } from "@/lib/enquiries";
 
 export const dynamic = "force-dynamic";
@@ -55,8 +56,9 @@ export default async function EnquiriesPage({
 }) {
   await requireSession();
   const params = await searchParams;
+  const demo = await isDemoMode();
 
-  if (!isDatabaseConfigured()) {
+  if (!demo && !isDatabaseConfigured()) {
     return (
       <>
         <AdminHeader title="Enquiries" subtitle="Private lead pipeline" />
@@ -71,17 +73,19 @@ export default async function EnquiriesPage({
 
   const days = params.days ? Number(params.days) : null;
 
-  const result = await listEnquiries({
-    search: params.q?.trim() || undefined,
-    status: params.status || undefined,
-    projectType: params.type || undefined,
-    budget: params.budget || undefined,
-    leadSource: params.source || undefined,
-    days: Number.isFinite(days) && days ? days : null,
-    sort: params.sort,
-    page: params.page ? Number(params.page) : 1,
-    perPage: 20,
-  });
+  const result = demo
+    ? demoEnquiriesList()
+    : await listEnquiries({
+        search: params.q?.trim() || undefined,
+        status: params.status || undefined,
+        projectType: params.type || undefined,
+        budget: params.budget || undefined,
+        leadSource: params.source || undefined,
+        days: Number.isFinite(days) && days ? days : null,
+        sort: params.sort,
+        page: params.page ? Number(params.page) : 1,
+        perPage: 20,
+      });
 
   const hasFilters = Boolean(
     params.q || params.status || params.type || params.budget || params.source || params.days

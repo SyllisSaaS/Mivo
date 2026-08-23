@@ -20,6 +20,11 @@ import {
   type EnquiryStatus,
 } from "@/lib/constants";
 import { isDatabaseConfigured } from "@/lib/db";
+import {
+  demoEnquiriesList,
+  demoOverviewMetrics,
+  isDemoMode,
+} from "@/lib/demo";
 import { listEnquiries } from "@/lib/enquiries";
 import { getOverviewMetrics } from "@/lib/metrics";
 
@@ -37,8 +42,9 @@ export default async function OverviewPage({
   const params = await searchParams;
   const rangeKey = isDateRangeKey(params.range) ? params.range : "30d";
   const range = DATE_RANGES[rangeKey];
+  const demo = await isDemoMode();
 
-  if (!isDatabaseConfigured()) {
+  if (!demo && !isDatabaseConfigured()) {
     return (
       <>
         <AdminHeader title="Overview" subtitle="Business at a glance" />
@@ -51,10 +57,12 @@ export default async function OverviewPage({
     );
   }
 
-  const [metrics, recent] = await Promise.all([
-    getOverviewMetrics(range.days),
-    listEnquiries({ perPage: 8, sort: "newest" }),
-  ]);
+  const [metrics, recent] = demo
+    ? [demoOverviewMetrics(), demoEnquiriesList()]
+    : await Promise.all([
+        getOverviewMetrics(range.days),
+        listEnquiries({ perPage: 8, sort: "newest" }),
+      ]);
 
   const conversion =
     metrics.conversionRate === null
