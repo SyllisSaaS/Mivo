@@ -13,6 +13,7 @@ import {
 import { requireSession } from "@/lib/auth";
 import { PROJECT_STATUSES, PROJECT_STATUS_LABELS } from "@/lib/constants";
 import { isDatabaseConfigured } from "@/lib/db";
+import { demoProjectsList, isDemoMode } from "@/lib/demo";
 import { getProject, listProjects } from "@/lib/projects";
 import { addProject, editProject, removeProject } from "./actions";
 import { ProjectForm } from "./ProjectForm";
@@ -28,8 +29,9 @@ export default async function ProjectsPage({
 }) {
   await requireSession();
   const params = await searchParams;
+  const demo = await isDemoMode();
 
-  if (!isDatabaseConfigured()) {
+  if (!demo && !isDatabaseConfigured()) {
     return (
       <>
         <AdminHeader title="Projects" subtitle="Private project tracking" />
@@ -42,13 +44,13 @@ export default async function ProjectsPage({
     );
   }
 
-  const projects = await listProjects(params.status);
+  const projects = demo ? demoProjectsList() : await listProjects(params.status);
 
-  const editId = params.edit ? Number(params.edit) : null;
+  const editId = !demo && params.edit ? Number(params.edit) : null;
   const editing =
     editId && Number.isInteger(editId) ? await getProject(editId) : null;
 
-  const showNewForm = params.new === "1" || Boolean(editing);
+  const showNewForm = !demo && (params.new === "1" || Boolean(editing));
 
   return (
     <>
@@ -58,7 +60,7 @@ export default async function ProjectsPage({
           projects.length === 1 ? "project" : "projects"
         }${params.status ? " in this view" : ""}`}
         actions={
-          showNewForm ? (
+          demo ? undefined : showNewForm ? (
             <Link className="admin-button admin-button--small" href="/admin/projects">
               Close form
             </Link>

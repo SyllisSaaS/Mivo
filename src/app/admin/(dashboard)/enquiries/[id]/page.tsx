@@ -14,6 +14,12 @@ import { recordAudit } from "@/lib/audit";
 import { requireSession } from "@/lib/auth";
 import { ENQUIRY_STATUSES, ENQUIRY_STATUS_LABELS } from "@/lib/constants";
 import { getEnquiry, listNotes } from "@/lib/enquiries";
+import {
+  getDemoEnquiry,
+  getDemoEnquiryNotes,
+  isDemoEnquiryId,
+  isDemoMode,
+} from "@/lib/demo";
 import { ipHashFromHeaders } from "@/lib/request";
 import {
   addEnquiryNote,
@@ -41,20 +47,31 @@ export default async function EnquiryDetailPage({
     notFound();
   }
 
-  const enquiry = await getEnquiry(id);
+  const demo = await isDemoMode();
+  const enquiry =
+    demo && isDemoEnquiryId(id)
+      ? getDemoEnquiry(id)
+      : await getEnquiry(id);
   if (!enquiry) {
     notFound();
   }
 
-  const notes = await listNotes(id);
+  const notes =
+    demo && isDemoEnquiryId(id)
+      ? getDemoEnquiryNotes(id)
+      : await listNotes(id);
 
-  await recordAudit({
-    adminId: session.adminId,
-    action: "enquiry.viewed",
-    targetType: "enquiry",
-    targetId: id,
-    ipHash: ipHashFromHeaders(await headers()),
-  });
+  if (!demo || !isDemoEnquiryId(id)) {
+    await recordAudit({
+      adminId: session.adminId,
+      action: "enquiry.viewed",
+      targetType: "enquiry",
+      targetId: id,
+      ipHash: ipHashFromHeaders(await headers()),
+    });
+  }
+
+  const readOnlyDemo = demo && isDemoEnquiryId(id);
 
   const details: [string, string | null][] = [
     ["Business", enquiry.business_name],
@@ -95,6 +112,12 @@ export default async function EnquiryDetailPage({
       />
 
       <div className="admin-content">
+        {readOnlyDemo && (
+          <Notice tone="warning">
+            Demo enquiry — read-only sample data. Turn off demo mode to manage
+            real enquiries.
+          </Notice>
+        )}
         <div className="admin-detail">
           {/* Left column — the enquiry itself */}
           <div style={{ display: "grid", gap: 20 }}>
@@ -157,6 +180,7 @@ export default async function EnquiryDetailPage({
               title="Internal notes"
               description="Private to you — never shown on the public site"
             >
+              {!readOnlyDemo && (
               <form
                 action={addEnquiryNote}
                 style={{ display: "grid", gap: 10, marginBottom: notes.length ? 20 : 0 }}
@@ -180,6 +204,7 @@ export default async function EnquiryDetailPage({
                   </button>
                 </div>
               </form>
+              )}
 
               {notes.length > 0 && (
                 <div className="admin-notes">
@@ -189,6 +214,7 @@ export default async function EnquiryDetailPage({
                         {formatDateTime(note.created_at)}
                       </time>
                       <p>{note.body}</p>
+                      {!readOnlyDemo && (
                       <form action={removeEnquiryNote} style={{ marginTop: 8 }}>
                         <input type="hidden" name="id" value={id} />
                         <input type="hidden" name="noteId" value={note.id} />
@@ -196,15 +222,21 @@ export default async function EnquiryDetailPage({
                           Delete note
                         </ConfirmSubmit>
                       </form>
+                      )}
                     </article>
                   ))}
                 </div>
+              )}
+              {readOnlyDemo && notes.length === 0 && (
+                <p className="admin-stat__hint">No demo notes for this enquiry.</p>
               )}
             </Panel>
           </div>
 
           {/* Right column — actions */}
           <div style={{ display: "grid", gap: 20 }}>
+            {!readOnlyDemo && (
+            <>
             <Panel title="Update status">
               <form action={setEnquiryStatus} style={{ display: "grid", gap: 10 }}>
                 <input type="hidden" name="id" value={id} />
@@ -281,6 +313,8 @@ export default async function EnquiryDetailPage({
                 </form>
               </div>
             </Panel>
+            </>
+            )}
           </div>
         </div>
       </div>

@@ -19,6 +19,10 @@ import {
   type EnquiryStatus,
 } from "@/lib/constants";
 import { isDatabaseConfigured } from "@/lib/db";
+import {
+  demoAnalyticsBreakdown,
+  isDemoMode,
+} from "@/lib/demo";
 import { getAnalyticsBreakdown } from "@/lib/metrics";
 
 export const dynamic = "force-dynamic";
@@ -40,8 +44,9 @@ export default async function AnalyticsPage({
   )
     ? params.source
     : undefined;
+  const demo = await isDemoMode();
 
-  if (!isDatabaseConfigured()) {
+  if (!demo && !isDatabaseConfigured()) {
     return (
       <>
         <AdminHeader title="Analytics" subtitle="Private business metrics" />
@@ -54,9 +59,11 @@ export default async function AnalyticsPage({
     );
   }
 
-  const data = await getAnalyticsBreakdown(range.days, leadSource);
+  const data = demo
+    ? demoAnalyticsBreakdown()
+    : await getAnalyticsBreakdown(range.days, leadSource);
 
-  const thin = data.totalEnquiries < 5;
+  const thin = !demo && data.totalEnquiries < 5;
 
   return (
     <>

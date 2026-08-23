@@ -12,6 +12,8 @@ export type AuditAction =
   | "admin.login_failed"
   | "admin.logout"
   | "admin.sessions_revoked"
+  | "admin.demo_on"
+  | "admin.demo_off"
   | "enquiry.viewed"
   | "enquiry.status_changed"
   | "enquiry.note_added"
