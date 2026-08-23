@@ -1,0 +1,18 @@
+{
+  // Compiles the pure library modules to CommonJS so `node --test` can import
+  // them without a bundler. Output is throwaway (.test-build, gitignored).
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "types": ["node"],
+    "module": "node18",
+    "moduleResolution": "node16",
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "noEmit": false,
+    "outDir": ".test-build",
+    "rootDir": "src"
+  },
+  "include": ["src/lib/validation.ts", "src/lib/constants.ts"]
+}

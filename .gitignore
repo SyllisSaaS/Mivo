@@ -5,13 +5,32 @@
 .vscode/
 .idea/
 
-# Build cache (legacy)
-.next/
+# Dependencies
+node_modules/
 
-# Env (if added later)
+# Next.js
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+
+# Environment / secrets — never commit these
 .env
-.env.*
+.env.local
+.env.*.local
+.env.production
+.env.development
+
+# Vercel
+.vercel
+
+# Logs
+npm-debug.log*
+yarn-error.log*
 
 # Archives / temp
 *.zip
 Mivo-main/
+
+# Test build output
+.test-build/
