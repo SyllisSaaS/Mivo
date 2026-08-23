@@ -48,12 +48,16 @@ const BROKEN_GRACE_MS = 10_000;
 const AUTH_SECRET = randomBytes(48).toString("base64");
 const ADMIN_EMAIL = "owner@example.invalid";
 /**
- * DATABASE_URL has to be *set* for the session check to reach its database
- * lookup, but the suite must never touch a real database. Port 1 on loopback
- * refuses connections immediately, so the lookup fails fast and the route has
- * to fall back to "no session".
+ * DATABASE_URL has to be *set* for the session check to get as far as its
+ * database lookup, but the suite must never touch a real database. These are
+ * not credentials — they are placeholders that point nowhere, so the lookup
+ * always throws and `getSession()` has to fail closed. The URL still needs a
+ * user and a password because that is the shape the Neon driver insists on
+ * before it will attempt a connection at all.
  */
-const UNREACHABLE_DATABASE_URL = `postgresql://mivo-test:mivo-test@${HOST}:1/mivo-test`;
+const UNREACHABLE_DATABASE_URL =
+  `postgresql://not-a-real-user:not-a-real-password` +
+  `@${HOST}:1/mivo-access-control-test`;
 
 let serverEnv = null;
 let server = null;
