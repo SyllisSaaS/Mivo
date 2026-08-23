@@ -14,12 +14,12 @@ out/
 next-env.d.ts
 *.tsbuildinfo
 
-# Environment / secrets — never commit these
+# Environment / secrets — never commit these.
+# Everything .env* is ignored, then the empty template is allowed back in.
 .env
-.env.local
-.env.*.local
-.env.production
-.env.development
+.env.*
+.env*.local
+!.env.example
 
 # Vercel
 .vercel
