@@ -41,7 +41,7 @@ export const portfolioProjects: PortfolioProject[] = [
     description:
       "A personal project exploring brand discovery — product design, layout and front-end development.",
     technologies: ["HTML", "CSS", "JavaScript"],
-    liveUrl: "https://syllis.vercel.app/",
+    liveUrl: "https://syllismain.vercel.app/",
     previewClass: "preview-syllis",
     previewLabel: "SYLLIS",
     featured: true,
